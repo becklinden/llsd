@@ -1,48 +1,41 @@
 require 'test_helper'
 
 class LLSDUnitTest < Test::Unit::TestCase
-  def setup
-    # LLSD = LLSD.new
-  end
-
-  #~ def teardown
-  #~ end
-
   def test_map
     map_xml = <<EOF
     <llsd>
-    <map>
-     <key>foo</key>
-     <string>bar</string>
-    </map>
+      <map>
+        <key>foo</key>
+        <string>bar</string>
+      </map>
     </llsd>
 EOF
 
     map_within_map_xml = <<EOF
     <llsd>
-    <map>
-     <key>doo</key>
-     <map>
-       <key>goo</key>
-       <string>poo</string>
-     </map>
-    </map>
+      <map>
+        <key>doo</key>
+        <map>
+          <key>goo</key>
+          <string>poo</string>
+        </map>
+      </map>
     </llsd>
 EOF
 
     blank_map_xml = <<EOF
-    <?xml version="1.0" encoding="UTF-8"?>
     <llsd>
-    <map />
+      <map/>
     </llsd>
 EOF
 
     ruby_map = {'foo' => 'bar'}
     ruby_map_within_map = {'doo' => {'goo' => 'poo'}}
+    ruby_blank_map = {}
 
     assert_equal ruby_map, LLSD.parse(map_xml)
     assert_equal ruby_map_within_map, LLSD.parse(map_within_map_xml)
-    assert_equal({}, LLSD.parse(blank_map_xml))
+    assert_equal ruby_blank_map, LLSD.parse(blank_map_xml)
 
     assert_equal strip(map_xml), LLSD.to_xml(ruby_map)
     assert_equal strip(map_within_map_xml), LLSD.to_xml(ruby_map_within_map)
@@ -51,39 +44,39 @@ EOF
   def test_array
     array_xml = <<EOF
     <llsd>
-    <array>
-      <string>foo</string>
-      <string>bar</string>
-    </array>
+      <array>
+        <string>foo</string>
+        <string>bar</string>
+      </array>
     </llsd>
 EOF
 
     array_within_array_xml = <<EOF
     <llsd>
-    <array>
-      <string>foo</string>
-      <string>bar</string>
       <array>
         <string>foo</string>
         <string>bar</string>
+        <array>
+          <string>foo</string>
+          <string>bar</string>
+        </array>
       </array>
-    </array>
     </llsd>
 EOF
 
     blank_array_xml = <<EOF
-    <?xml version="1.0" encoding="UTF-8"?>
     <llsd>
-    <array />
+      <array/>
     </llsd>
 EOF
 
     ruby_array = ['foo', 'bar']
     ruby_array_within_array = ['foo', 'bar', ['foo', 'bar']]
+    ruby_blank_array = []
 
-    assert_equal ruby_array,  LLSD.parse(array_xml)
-    assert_equal ruby_array_within_array,  LLSD.parse(array_within_array_xml)
-    assert_equal([], LLSD.parse(blank_array_xml))
+    assert_equal ruby_array, LLSD.parse(array_xml)
+    assert_equal ruby_array_within_array, LLSD.parse(array_within_array_xml)
+    assert_equal ruby_blank_array, LLSD.parse(blank_array_xml)
 
     assert_equal strip(array_xml), LLSD.to_xml(ruby_array)
     assert_equal strip(array_within_array_xml), LLSD.to_xml(ruby_array_within_array)
@@ -92,13 +85,13 @@ EOF
   def test_string
     normal_xml = <<EOF
     <llsd>
-    <string>foo</string>
+      <string>foo</string>
     </llsd>
 EOF
 
     blank_xml = <<EOF
     <llsd>
-    <string />
+      <string/>
     </llsd>
 EOF
 
@@ -112,19 +105,19 @@ EOF
   def test_integer
     pos_int_xml = <<EOF
     <llsd>
-    <integer>289343</integer>
+      <integer>289343</integer>
     </llsd>
 EOF
 
     neg_int_xml = <<EOF
     <llsd>
-    <integer>-289343</integer>
+      <integer>-289343</integer>
     </llsd>
 EOF
 
     blank_int_xml = <<EOF
     <llsd>
-    <integer />
+      <integer/>
     </llsd>
 EOF
 
@@ -142,20 +135,19 @@ EOF
   def test_real
     pos_real_xml = <<EOF
     <llsd>
-    <real>2983287453.38483</real>
+      <real>2983287453.38483</real>
     </llsd>
 EOF
 
     neg_real_xml = <<EOF
     <llsd>
-    <real>-2983287453.38483</real>
+      <real>-2983287453.38483</real>
     </llsd>
 EOF
 
     blank_real_xml = <<EOF
-    <?xml version="1.0" encoding="UTF-8"?>
     <llsd>
-    <real />
+      <real/>
     </llsd>
 EOF
     ruby_pos_real = 2983287453.38483
@@ -172,20 +164,19 @@ EOF
   def test_boolean
     true_xml = <<EOF
     <llsd>
-    <boolean>true</boolean>
+      <boolean>true</boolean>
     </llsd>
 EOF
 
     false_xml = <<EOF
     <llsd>
-    <boolean>false</boolean>
+      <boolean>false</boolean>
     </llsd>
 EOF
 
     blank_xml = <<EOF
-    <?xml version="1.0" encoding="UTF-8"?>
     <llsd>
-    <boolean />
+      <boolean/>
     </llsd>
 EOF
 
@@ -200,22 +191,21 @@ EOF
   def test_date
     valid_date_xml = <<EOF
     <llsd>
-    <date>2006-02-01T14:29:53Z</date>
+      <date>2006-02-01T14:29:53Z</date>
     </llsd>
 EOF
 
     blank_date_xml = <<EOF
-    <?xml version="1.0" encoding="UTF-8"?>
     <llsd>
-    <date />
+      <date/>
     </llsd>
 EOF
 
     ruby_valid_date = DateTime.strptime('2006-02-01T14:29:53Z')
     ruby_blank_date = DateTime.strptime('1970-01-01T00:00:00Z')
 
-    assert_equal(ruby_valid_date, LLSD.parse(valid_date_xml))
-    assert_equal(ruby_blank_date, LLSD.parse(blank_date_xml))
+    assert_equal ruby_valid_date, LLSD.parse(valid_date_xml)
+    assert_equal ruby_blank_date, LLSD.parse(blank_date_xml)
 
     assert_equal strip(valid_date_xml), LLSD.to_xml(ruby_valid_date)
   end
@@ -224,29 +214,26 @@ EOF
 
   def test_binary
     base64_binary_xml = <<EOF
-    <?xml version="1.0" encoding="UTF-8"?>
     <llsd>
-    <binary>dGhlIHF1aWNrIGJyb3duIGZveA==</binary>
+      <binary>dGhlIHF1aWNrIGJyb3duIGZveA==</binary>
     </llsd>
 EOF
 
-    # <binary /> should return blank binary blob... in ruby I guess this is just nil
+    # <binary/> should return blank binary blob... in ruby I guess this is just nil
 
     assert_equal 'dGhlIHF1aWNrIGJyb3duIGZveA==', LLSD.parse(base64_binary_xml)
   end
 
   def test_uuid
     valid_uuid_xml = <<EOF
-    <?xml version="1.0" encoding="UTF-8"?>
     <llsd>
-    <uuid>d7f4aeca-88f1-42a1-b385-b9db18abb255</uuid>
+      <uuid>d7f4aeca-88f1-42a1-b385-b9db18abb255</uuid>
     </llsd>
 EOF
 
     blank_uuid_xml = <<EOF
-    <?xml version="1.0" encoding="UTF-8"?>
     <llsd>
-    <uuid />
+      <uuid/>
     </llsd>
 EOF
 
@@ -256,27 +243,27 @@ EOF
 
   def test_uri
     valid_uri_xml = <<EOF
-    <?xml version="1.0" encoding="UTF-8"?>
     <llsd>
-    <uri>http://www.example.com:4201/agents</uri>
+      <uri>http://www.example.com:4201/agents</uri>
     </llsd>
 EOF
 
     blank_uri_xml = <<EOF
-    <?xml version="1.0" encoding="UTF-8"?>
     <llsd>
-    <uri />
+      <uri/>
     </llsd>
 EOF
 
-    # <uri /> should return an empty link, which in ruby I guess is just nil
+    # <uri/> should return an empty link, which in ruby I guess is just nil
     assert_equal 'http://www.example.com:4201/agents', LLSD.parse(valid_uri_xml)
     assert_equal nil, LLSD.parse(blank_uri_xml)
   end
 
   def test_undefined
     undef_xml = <<EOF
-    <llsd><undef /></llsd>
+    <llsd>
+      <undef/>
+    </llsd>
 EOF
 
     assert_equal nil, LLSD.parse(undef_xml)
@@ -294,7 +281,4 @@ EOF
   def strip(str)
     str.delete "\n "
   end
-  #~ def test_fail
-    #~ assert(false, 'Assertion was false.')
-  #~ end
 end
